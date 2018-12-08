@@ -387,8 +387,8 @@ applyBindings(defaultBindings, __bva__);
       var product = {
         'products': [{
           'id'              : {{product.id | json}},
-          'sku'             : {{product.selected_variant.sku | json}},
-          'variantId'       : {{product.selected_variant.variant.id | json}},
+          'sku'             : {{product.first_available_variant.sku | json}},
+          'variantId'       : {{product.first_available_variant.id | json}},
           'productType'     : {{product.type | json}},
           'name'            : {{product.title | json}},
           'price'           : {{product.price | money_without_currency | remove: "," | json}},
