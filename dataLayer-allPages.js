@@ -73,7 +73,7 @@ __bva__ = {
 
 customBindings = {
   cartTriggers: [],
-  viewCart: [],
+  viewCart: ['.site-header__cart-toggle'],
   removeCartTrigger: [],
   cartVisableSelector: [],
   promoSubscriptionsSelectors: [],
@@ -234,8 +234,8 @@ applyBindings(defaultBindings, __bva__);
       'customerEmail' : {{customer.email | json}},
       'logState'      : "Logged In",
       'customerInfo'  : {
-        'firstName'   : {{customer_address.first_name | json}},
-        'lastName'    : {{customer_address.last_name | json}},
+        'firstName'   : {{customer.first_name | json}},
+        'lastName'    : {{customer.last_name | json}},
         'address1'    : {{customer_address.address1 | json}},
         'address2'    : {{customer_address.address2 | json}},
         'street'      : {{customer_address.street | json}},
@@ -346,6 +346,7 @@ applyBindings(defaultBindings, __bva__);
         'productType'     : {{product.type | json}},
         'name'            : {{product.title | json}},
         'price'           : {{product.price | money_without_currency | remove: "," | json}},
+        'currency'        : {{shop.currency | json}},
         'imageURL'        : "https:{{product.featured_image.src|img_url:'grande'}}", 
         'productURL'      : '{{shop.secure_url}}{{product.url}}',
         'brand'           : {{shop.name | json}},
@@ -392,6 +393,7 @@ applyBindings(defaultBindings, __bva__);
           'productType'     : {{product.type | json}},
           'name'            : {{product.title | json}},
           'price'           : {{product.price | money_without_currency | remove: "," | json}},
+          'currency'        : {{shop.currency | json}},
           'description'     : {{product.description | strip_newlines | strip_html | json}},
           'imageURL'        : "https:{{product.featured_image.src|img_url:'grande'}}", 
           'productURL'      : '{{shop.secure_url}}{{product.url}}',
@@ -442,6 +444,7 @@ applyBindings(defaultBindings, __bva__);
         'variant'  : {{line_item.variant_id | json}},
         'name'     : {{line_item.title | json}},
         'price'    : {{line_item.price | money_without_currency | remove: "," | json}},
+        'currency' : {{shop.currency | json}},
         'quantity' : {{line_item.quantity | json}}
       },{% endfor %}],
       'pageType' : 'Cart',
@@ -471,6 +474,7 @@ applyBindings(defaultBindings, __bva__);
               'variant'  : line_item.variant_id,
               'name'     : line_item.title,
               'price'    : (line_item.price/100),
+              'currency' : line_item.currency,
               'quantity' : line_item.quantity
             }
           }),
@@ -653,6 +657,7 @@ applyBindings(defaultBindings, __bva__);
                 'variant'  : line_item.variant_id,
                 'name'     : line_item.title,
                 'price'    : (line_item.price/100),
+                'currency' : line_item.currency,
                 'quantity' : line_item.quantity
               }
               }),
@@ -702,6 +707,7 @@ applyBindings(defaultBindings, __bva__);
                       'variant'  : line_item.variant_id,
                       'name'     : line_item.title,
                       'price'    : (line_item.price/100),
+                      'currency' : line_item.currency,
                       'quantity' : line_item.quantity
                     }
                   }),
@@ -737,6 +743,7 @@ applyBindings(defaultBindings, __bva__);
               'variant'  : line_item.variant_id,
               'name'     : line_item.title,
               'price'    : (line_item.price/100),
+              'currency' : line_item.currency,
               'quantity' : line_item.quantity
             }
           })
@@ -767,6 +774,7 @@ applyBindings(defaultBindings, __bva__);
                   'variant'  : line_item.variant_id,
                   'name'     : line_item.title,
                   'price'    : (line_item.price/100),
+                  'currency' : line_item.currency,
                   'quantity' : line_item.quantity
                 }
               })
@@ -852,6 +860,7 @@ applyBindings(defaultBindings, __bva__);
                       'variant'  : line_item.variant_id,
                       'name'     : line_item.title,
                       'price'    : (line_item.price/100),
+                      'currency' : line_item.currency,
                       'quantity' : line_item.quantity
                     }
                   }),
