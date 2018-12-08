@@ -241,8 +241,10 @@ applyBindings(defaultBindings, __bva__);
         'street'      : {{customer_address.street | json}},
         'city'        : {{customer_address.city | json}},
         'province'    : {{customer_address.province | json}},
+        'provinceCode': {{customer_address.province_code | json}},
         'zip'         : {{customer_address.zip | json}},
         'country'     : {{customer_address.country | json}},
+        'countryCode' : {{customer_address.country_code | json}},
         'phone'       : {{customer_address.phone | json}},
         'totalOrders' : {{customer.orders_count | json}},
         'totalSpent'  : {{customer.total_spent | money_without_currency | remove: "," | json}}
@@ -519,16 +521,22 @@ applyBindings(defaultBindings, __bva__);
 
     {% endfor %}
     transactionData = {
-      'transactionNumber'      : {{checkout.order_id | json}},
-      'transactionId'          : {{checkout.order_number | json}},
-      'transactionAffiliation' : {{shop.name | json}},
-      'transactionTotal'       : {{checkout.total_price | money_without_currency| remove: "," | json}},
-      'transactionTax'         : {{checkout.tax_price | money_without_currency| remove: "," | json}},
-      'transactionShipping'    : {{checkout.shipping_price | money_without_currency| remove: "," | json}},
-      'transactionSubtotal'    : {{checkout.subtotal_price | money_without_currency| remove: "," | json}},
+      'firstTimeAccessed'         : {% if first_time_accessed %}'true'{% else %}'false'{% endif %},
+      'newCustomer'               : {% if customer.orders_count > 1 %}'false'{% else %}'true'{% endif %},
+      'transactionId'             : {{checkout.order_id | json}},
+      'transactionNumber'         : {{checkout.order_number | json}},
+      'transactionAffiliation'    : {{shop.name | json}},
+      'transactionTotal'          : {{checkout.total_price | money_without_currency| remove: "," | json}},
+      'transactionTax'            : {{checkout.tax_price | money_without_currency| remove: "," | json}},
+      'transactionShipping'       : {{checkout.shipping_price | money_without_currency| remove: "," | json}},
+      'transactionSubtotal'       : {{checkout.subtotal_price | money_without_currency| remove: "," | json}},
+      'transactionShippingMethod' : {{checkout.shipping_method.title | json}},
+      'transactionPaymentMethod'  : {{transaction.payment_gateway | json}},
+      'transactionCodes'          : '{% for discount in checkout.discounts %}{% if forloop.last == true %}{{discount.code}}{% else %}{{discount.code | append: ', '}}{% endif %}{% endfor %}',
+      'transactionDiscount'       : {% if giftamount %}{% if checkout.discounts %}{% assign discount_total = checkout.discounts_amount | divided_by: 100 | plus: giftamount %}{% else %}{% assign discount_total = giftamount %}{% endif %}{% else %}{% assign discount_total = checkout.discounts_amount %}{% endif %}{% assign dtotal = discount_total | times: 100 %}{{ dtotal }},
       {% for discount in checkout.discounts %}
       'promoCode' : {{discount.code | json}},
-      'discount'  : {{discount.amoun t | money_without_currency | json}},
+      'discount'  : {{discount.amount | money_without_currency | json}},
       {% endfor %}
 
       'products': __bva__products
