@@ -537,10 +537,10 @@ applyBindings(defaultBindings, __bva__);
       'transactionShippingMethod' : {{checkout.shipping_method.title | json}},
       'transactionPaymentMethod'  : {{transaction.payment_gateway | json}},
       'transactionCodes'          : '{% for discount in checkout.discounts %}{% if forloop.last == true %}{{discount.code}}{% else %}{{discount.code | append: ', '}}{% endif %}{% endfor %}',
-      'transactionDiscount'       : {% if giftamount %}{% if checkout.discounts %}{% assign discount_total = checkout.discounts_amount | divided_by: 100 | plus: giftamount %}{% else %}{% assign discount_total = giftamount %}{% endif %}{% else %}{% assign discount_total = checkout.discounts_amount %}{% endif %}{% assign dtotal = discount_total | times: 100 %}{{ dtotal }},
+      'transactionDiscount'       : {% assign gift_total = gift_card.balance | money_without_currency | remove "," %}{% assign discount_total = checkout.discounts_amount | money_without_currency | remove "," | plus: gift_total %}{{discount_total}},
       {% for discount in checkout.discounts %}
       'promoCode' : {{discount.code | json}},
-      'discount'  : {{discount.amount | money_without_currency | json}},
+      'discount'  : {{discount.amount | money_without_currency | remove "," | json}},
       {% endfor %}
 
       'products': __bva__products
