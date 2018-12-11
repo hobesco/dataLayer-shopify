@@ -341,6 +341,7 @@ applyBindings(defaultBindings, __bva__);
       'products': [
       {% for product in collection.products %}{
         'id'              : {{product.id | json}},
+        'productsId'      : {{product.id | json}},
         'sku'             : {{product.selected_variant.sku | json}},
         'variantId'       : {{product.selected_variant.variant.id | json}},
         'productType'     : {{product.type | json}},
@@ -388,6 +389,7 @@ applyBindings(defaultBindings, __bva__);
       var product = {
         'products': [{
           'id'              : {{product.id | json}},
+          'productsId'      : {{product.id | json}},
           'sku'             : {{product.first_available_variant.sku | json}},
           'variantId'       : {{product.first_available_variant.id | json}},
           'productType'     : {{product.type | json}},
@@ -439,13 +441,14 @@ applyBindings(defaultBindings, __bva__);
     {% if template contains 'cart' %}
     var cart = {
       'products':[{% for line_item in cart.items %}{
-        'id'       : {{line_item.product_id | json}},
-        'sku'      : {{line_item.sku | json}},
-        'variant'  : {{line_item.variant_id | json}},
-        'name'     : {{line_item.title | json}},
-        'price'    : {{line_item.price | money_without_currency | remove: "," | json}},
-        'currency' : {{shop.currency | json}},
-        'quantity' : {{line_item.quantity | json}}
+        'id'         : {{line_item.product_id | json}},
+        'productId' : {{product.id | json}},
+        'sku'        : {{line_item.sku | json}},
+        'variant'    : {{line_item.variant_id | json}},
+        'name'       : {{line_item.title | json}},
+        'price'      : {{line_item.price | money_without_currency | remove: "," | json}},
+        'currency'   : {{shop.currency | json}},
+        'quantity'   : {{line_item.quantity | json}}
       },{% endfor %}],
       'pageType' : 'Cart',
       'event'    : 'Cart'
@@ -469,13 +472,14 @@ applyBindings(defaultBindings, __bva__);
         var removeFromCart = {
           'products': __bva__.removeCart.items.map(function (line_item) {
             return {
-              'id'       : line_item.product_id,
-              'sku'      : line_item.sku,
-              'variant'  : line_item.variant_id,
-              'name'     : line_item.title,
-              'price'    : (line_item.price/100),
-              'currency' : line_item.currency,
-              'quantity' : line_item.quantity
+              'id'        : line_item.product_id,
+              'productId' : line_item.product_id,
+              'sku'       : line_item.sku,
+              'variant'   : line_item.variant_id,
+              'name'      : line_item.title,
+              'price'     : (line_item.price/100),
+              'currency'  : line_item.currency,
+              'quantity'  : line_item.quantity
             }
           }),
           'pageType' : 'Remove from Cart',
@@ -512,6 +516,7 @@ applyBindings(defaultBindings, __bva__);
 
     __bva__products.push({
       'id'          : {{line_item.product_id | json}},
+      'productId'   : {{line_item.product_id | json}},
       'sku'         : {{line_item.sku | json}},
       'variantId'   : {{line_item.variant_id | json}},
       'name'        : {{line_item.title | json}},
@@ -537,10 +542,10 @@ applyBindings(defaultBindings, __bva__);
       'transactionShippingMethod' : {{checkout.shipping_method.title | json}},
       'transactionPaymentMethod'  : {{transaction.payment_gateway | json}},
       'transactionCodes'          : '{% for discount in checkout.discounts %}{% if forloop.last == true %}{{discount.code}}{% else %}{{discount.code | append: ', '}}{% endif %}{% endfor %}',
-      'transactionDiscount'       : {% assign gift_total = gift_card.balance | money_without_currency | remove "," %}{% assign discount_total = checkout.discounts_amount | money_without_currency | remove "," | plus: gift_total %}{{discount_total}},
+      'transactionDiscount'       : {% assign gift_total = gift_card.balance | money_without_currency | remove: "," %}{% assign discount_total = checkout.discounts_amount | money_without_currency | remove: "," | plus: gift_total %}{{discount_total | json}},
       {% for discount in checkout.discounts %}
       'promoCode' : {{discount.code | json}},
-      'discount'  : {{discount.amount | money_without_currency | remove "," | json}},
+      'discount'  : {{discount.amount | money_without_currency | remove: "," | json}},
       {% endfor %}
 
       'products': __bva__products
@@ -652,13 +657,14 @@ applyBindings(defaultBindings, __bva__);
           var cart = {
             'products': __bva__.cart.items.map(function (line_item) {
               return {
-                'id'       : line_item.id,
-                'sku'      : line_item.sku,
-                'variant'  : line_item.variant_id,
-                'name'     : line_item.title,
-                'price'    : (line_item.price/100),
-                'currency' : line_item.currency,
-                'quantity' : line_item.quantity
+                'id'        : line_item.id,
+                'productId' : line_item.id,
+                'sku'       : line_item.sku,
+                'variant'   : line_item.variant_id,
+                'name'      : line_item.title,
+                'price'     : (line_item.price/100),
+                'currency'  : line_item.currency,
+                'quantity'  : line_item.quantity
               }
               }),
             'pageType' : 'Cart',
@@ -702,13 +708,14 @@ applyBindings(defaultBindings, __bva__);
                 var removeFromCart = {
                   'products': __bva__.removeCart.items.map(function (line_item) {
                     return {
-                      'id'       : line_item.id,
-                      'sku'      : line_item.sku,
-                      'variant'  : line_item.variant_id,
-                      'name'     : line_item.title,
-                      'price'    : (line_item.price/100),
-                      'currency' : line_item.currency,
-                      'quantity' : line_item.quantity
+                      'id'        : line_item.id,
+                      'productId' : line_item.id,
+                      'sku'       : line_item.sku,
+                      'variant'   : line_item.variant_id,
+                      'name'      : line_item.title,
+                      'price'     : (line_item.price/100),
+                      'currency'  : line_item.currency,
+                      'quantity'  : line_item.quantity
                     }
                   }),
                     'pageType' : 'Remove from Cart',
@@ -738,13 +745,14 @@ applyBindings(defaultBindings, __bva__);
         var cart = {
           'products': __bva__.cart.items.map(function (line_item) {
             return {
-              'id'       : line_item.id,
-              'sku'      : line_item.sku,
-              'variant'  : line_item.variant_id,
-              'name'     : line_item.title,
-              'price'    : (line_item.price/100),
-              'currency' : line_item.currency,
-              'quantity' : line_item.quantity
+              'id'        : line_item.id,
+              'productId' : line_item.id,
+              'sku'       : line_item.sku,
+              'variant'   : line_item.variant_id,
+              'name'      : line_item.title,
+              'price'     : (line_item.price/100),
+              'currency'  : line_item.currency,
+              'quantity'  : line_item.quantity
             }
           })
         }
@@ -769,13 +777,14 @@ applyBindings(defaultBindings, __bva__);
             var cart = {
               'products': __bva__.cart.items.map(function (line_item) {
                 return {
-                  'id'       : line_item.id,
-                  'sku'      : line_item.sku,
-                  'variant'  : line_item.variant_id,
-                  'name'     : line_item.title,
-                  'price'    : (line_item.price/100),
-                  'currency' : line_item.currency,
-                  'quantity' : line_item.quantity
+                  'id'        : line_item.id,
+                  'productId' : line_item.id,
+                  'sku'       : line_item.sku,
+                  'variant'   : line_item.variant_id,
+                  'name'      : line_item.title,
+                  'price'     : (line_item.price/100),
+                  'currency'  : line_item.currency,
+                  'quantity'  : line_item.quantity
                 }
               })
             }
@@ -855,13 +864,14 @@ applyBindings(defaultBindings, __bva__);
                 var removeFromCart = {
                   'products': __bva__.removeCart.items.map(function (line_item) {
                     return {
-                      'id'       : line_item.id,
-                      'sku'      : line_item.sku,
-                      'variant'  : line_item.variant_id,
-                      'name'     : line_item.title,
-                      'price'    : (line_item.price/100),
-                      'currency' : line_item.currency,
-                      'quantity' : line_item.quantity
+                      'id'        : line_item.id,
+                      'productId' : line_item.id,
+                      'sku'       : line_item.sku,
+                      'variant'   : line_item.variant_id,
+                      'name'      : line_item.title,
+                      'price'     : (line_item.price/100),
+                      'currency'  : line_item.currency,
+                      'quantity'  : line_item.quantity
                     }
                   }),
                   'pageType' : 'Remove from Cart',
